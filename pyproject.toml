@@ -37,3 +37,7 @@ strict_optional = true
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start-server = "src.core.server:main"
+start-client = "src.core.client:main"

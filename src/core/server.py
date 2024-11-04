@@ -83,6 +83,8 @@ class ThreadedTcpServer(ThreadingMixIn, TCPServer):
 
     allow_reuse_address: bool = True
 
+    daemon_threads: bool = True
+
     def __init__(
         self,
         server_address: Tuple[str, int],
@@ -243,13 +245,25 @@ class TcpServer:
             self.__logger.info("Server socket closed and port released.")
 
 
-if __name__ == "__main__":
-    config = Configuration()
-    file_loader = FileLoader(config)
-    if (
-        not config.REREAD_ON_QUERY
-    ):  # Todo: Run on a seperate thread to avoid blocking
+def main() -> None:
+    """Entry point for starting the TCP server."""
+
+    # Load configuration settings and initialize the file loader
+    configuration = Configuration()
+    file_loader = FileLoader(configuration)
+
+    # Preload file content if REREAD_ON_QUERY is disabled
+    if not configuration.REREAD_ON_QUERY:
         file_loader.load_buffer()
 
-    server = TcpServer(config, file_loader)
-    server.run()
+    # Initialize TCP server and prepare to run in a separate daemon thread
+    tcp_server = TcpServer(configuration, file_loader)
+
+    tcp_server.run()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        print(f"Error starting TCP server: {e}")

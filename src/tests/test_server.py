@@ -36,7 +36,7 @@ def mock_load_cert_chain() -> MagicMock:
     return MagicMock()
 
 
-@patch("src.core.server.ssl.create_default_context")
+@patch("ssl.create_default_context")
 @patch("src.core.server.TcpRequestHandler")
 @patch("src.core.server.ThreadedTcpServer")
 def test_tcp_server_initialization(
@@ -84,9 +84,9 @@ def test_tcp_server_init_bind_success(
 
 
 @patch("src.core.server.ThreadedTcpServer")
-@patch("src.core.server.ssl.SSLContext.wrap_socket")
-@patch("src.core.server.ssl.SSLContext.load_cert_chain")
-@patch("src.core.server.random.randint", return_value=54321)
+@patch("ssl.SSLContext.wrap_socket")
+@patch("ssl.SSLContext.load_cert_chain")
+@patch("random.randint", return_value=54321)
 def test_bind_server_socket_error(
     mock_randint: MagicMock,
     mock_load_cert_chain: MagicMock,
@@ -113,7 +113,7 @@ def test_bind_server_socket_error(
         server = TcpServer(mock_config, mock_file_loader)  # noqa: F841
 
 
-@patch("src.core.server.ssl.create_default_context")
+@patch("ssl.create_default_context")
 @patch("src.core.server.ThreadedTcpServer")
 def test_tcp_server_run(
     mock_server_class: MagicMock,
@@ -135,7 +135,7 @@ def test_tcp_server_run(
     mock_server_class.return_value.serve_forever.assert_called_once()
 
 
-@patch("src.core.server.ssl.create_default_context")
+@patch("ssl.create_default_context")
 @patch("src.core.server.ThreadedTcpServer")
 def test_tcp_server_shutdown(
     mock_server_class: MagicMock,
@@ -163,7 +163,7 @@ def test_tcp_server_shutdown(
     server_instance.server_close.assert_called_once()
 
 
-@patch("src.core.server.ssl.create_default_context")
+@patch("ssl.create_default_context")
 @patch("src.core.server.ThreadedTcpServer")
 def test_ssl_enabled(
     mock_server_class: MagicMock,

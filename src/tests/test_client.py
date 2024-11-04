@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.configuration import Configuration
-from src.core.client import TcpClient
+from ..configuration import Configuration
+from ..core.client import TcpClient
 
 
 @pytest.fixture
@@ -16,8 +16,8 @@ def mock_config() -> Configuration:
     return config
 
 
-@patch("src.core.client.socket.socket")
-@patch("src.core.client.ssl.create_default_context")
+@patch("socket.socket")
+@patch("ssl.create_default_context")
 def test_tcp_client_connection_without_ssl(
     mock_ssl_context: MagicMock,
     mock_socket: MagicMock,
@@ -41,8 +41,8 @@ def test_tcp_client_connection_without_ssl(
     assert client.connection == mock_socket_inst
 
 
-@patch("src.core.client.socket.socket")
-@patch("src.core.client.ssl.create_default_context")
+@patch("socket.socket")
+@patch("ssl.create_default_context")
 def test_tcp_client_connection_with_ssl(
     mock_ssl_context: MagicMock,
     mock_socket: MagicMock,
@@ -70,7 +70,7 @@ def test_tcp_client_connection_with_ssl(
     )
 
 
-@patch("src.core.client.socket.socket")
+@patch("socket.socket")
 @patch("builtins.input", side_effect=["test", "quit"])
 def test_tcp_client_send_queries(
     mock_input: MagicMock,
@@ -93,7 +93,7 @@ def test_tcp_client_send_queries(
     client.connection.recv.assert_called_once()
 
 
-@patch("src.core.client.socket.socket")
+@patch("socket.socket")
 def test_tcp_client_close_connection(
     mock_socket: MagicMock, mock_config: Configuration
 ) -> None:

@@ -34,8 +34,13 @@ class LoggingDescriptor:
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
 
+        # Set StreamHandler
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
+
+        # Set FileHanlder
+        fh = logging.FileHandler("logs/tcp_navigator.log")
+        fh.setLevel(logging.DEBUG)
 
         format_str = (
             "[%(asctime)s] - %(name)s - %(levelname)s - %(message)s"
@@ -45,9 +50,11 @@ class LoggingDescriptor:
             format_str, datefmt="%Y-%m-%d %H:%M:%S"
         )
         ch.setFormatter(formatter)
+        fh.setFormatter(formatter)
 
         if not logger.hasHandlers():
             logger.addHandler(ch)
+            logger.addHandler(fh)
 
         return logger
 

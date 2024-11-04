@@ -242,7 +242,6 @@ class FileLoader:
 
         # Select the appropriate search method based on the algorithm
         try:
-            self.__logger.info(f"Current search algorithm : {algorithm}")
             match algorithm:
                 case SearchAlgorithm.LOW_LEVEL:
                     return self._low_level_search()[pattern]

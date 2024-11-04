@@ -33,21 +33,6 @@ class Configuration:
         Args:
             config_file (str, optional): Config file name.
             Defaults to "config.ini".
-
-        Examples:
-        --------
-
-        >>> config = Configuration()
-        >>> config.HOST
-        'localhost'
-        >>> config.PORT
-        43223
-        >>> config.SSL_ENABLED
-        False
-        >>> config.SSL_CERT_PATH
-        'ssl/cert/cert.pem'
-        >>> config.SSL_KEY_PATH
-        'ssl/key/key.pem'
         """
         # Initialize the parser and set the path to the config file
         self._config = ConfigParser()
@@ -91,14 +76,14 @@ class Configuration:
         self._config.read(self._CONFIG_PATH)
 
         # Server Config
-        self.HOST: str = "localhost"
-        self.PORT: int = 43223
+        self.HOST: str = self._config.get("SERVER_CONFIG", "host")
+        self.PORT: int = int(self._config.get("SERVER_CONFIG", "port"))
 
         # Re-Read on Query
         self.REREAD_ON_QUERY: bool = False
 
         # File Path
-        self.FILE_PATH: str = self._config.get("DEFAULT", "linuxpath")
+        self.FILE_PATH: str = self._config.get("FILE_PATH", "linuxpath")
 
         # SSL Configuration
         self.SSL_ENABLED: bool = False

@@ -6,10 +6,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.configuration import Configuration
-from src.constants import SearchAlgorithm
-from src.core.helpers.file_loader import FileLoader
-from src.core.server import TcpRequestHandler, ThreadedTcpServer
+from ..configuration import Configuration
+from ..core.helpers.file_loader import FileLoader
+from ..core.server import TcpRequestHandler, ThreadedTcpServer
 
 
 @pytest.fixture

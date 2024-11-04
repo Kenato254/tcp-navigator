@@ -1,7 +1,9 @@
+from multiprocessing import Process
 import random
 import socket
 import ssl
 import sys
+import threading
 import time
 from socketserver import BaseRequestHandler, TCPServer, ThreadingMixIn
 from typing import Optional, Tuple, Type
@@ -212,8 +214,8 @@ class TcpServer:
                 self.__logger.info(
                     f"Retrying with random port {self.port}"
                 )
-                if "Port in use" in str(err):
-                    self.port = random.randint(1024, 65535)
+
+                self.port = random.randint(1024, 65535)
             except AttributeError as err:
                 self.__logger.error(
                     f"Setting instance attributes failed with: {err}"

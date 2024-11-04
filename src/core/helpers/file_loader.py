@@ -2,7 +2,6 @@ import mmap
 import os
 import re
 import subprocess
-import sys
 from collections import defaultdict
 from contextlib import closing
 from functools import lru_cache
@@ -64,7 +63,7 @@ class FileLoader:
             with line presence indicated as True for rapid lookups.
 
         Raises:
-            OSError: Exits if an error occurs while reading or mapping
+            OSError: Logs if an error occurs while reading or mapping
                 the file.
         """
         try:
@@ -86,7 +85,6 @@ class FileLoader:
 
         except OSError as e:
             self.__logger.error(f"Error reading the file: {e}")
-            sys.exit(-1)
 
         return self._loaded_data
 
@@ -103,7 +101,7 @@ class FileLoader:
             True values, facilitating fast checks for each line.
 
         Raises:
-            OSError: Exits if an error occurs while accessing or mapping
+            OSError: Logs if an error occurs while accessing or mapping
                 the file.
         """
         try:
@@ -123,7 +121,6 @@ class FileLoader:
 
         except OSError as e:
             self.__logger.error(f"Error reading the file: {e}")
-            sys.exit(-1)
 
         return self._loaded_data
 
@@ -139,7 +136,7 @@ class FileLoader:
                 True values.
 
         Raises:
-            OSError: Exits if an error occurs while accessing the file.
+            OSError: Logs if an error occurs while accessing the file.
         """
         try:
             # Use buffered I/O to read the file
@@ -151,7 +148,6 @@ class FileLoader:
 
         except OSError as e:
             self.__logger.error(f"Error reading the file: {e}")
-            sys.exit(-1)
 
         return self._loaded_data
 
@@ -164,7 +160,7 @@ class FileLoader:
             bytes: The entire file content in bytes.
 
         Raises:
-            OSError: Raise if an error occurs while reading the file.
+            OSError: Logs if an error occurs while reading the file.
         """
         try:
             self.__logger.info(
@@ -192,7 +188,7 @@ class FileLoader:
 
         Raises:
             Exception: Logs any error that occurs during file
-                reading or search.
+                reading or searching.
         """
         try:
             result = subprocess.run(
@@ -208,7 +204,7 @@ class FileLoader:
     def check_text(
         self,
         pattern: bytes,
-        algorithm: SearchAlgorithm = SearchAlgorithm.GREP_SEARCH,
+        algorithm: SearchAlgorithm = SearchAlgorithm.LOW_LEVEL,
     ) -> bool:
         """Checks if the specified pattern exists in the file using t
         he selected search algorithm.
@@ -242,7 +238,7 @@ class FileLoader:
 
         # Clear caches if re-reading is requested on each query
         if self._reread_on_query:
-            self.clear_file_data_from_memory()
+            algorithm = SearchAlgorithm.GREP_SEARCH
 
         # Select the appropriate search method based on the algorithm
         try:
@@ -273,6 +269,14 @@ class FileLoader:
         except OSError as e:
             self.__logger.error(f"Error reading the file: {e}")
             raise
+
+    def load_buffer(self) -> None:
+        """Loads file buffer into the IO Memory.
+
+        Use once during server initialization process
+            if `REREAD_ON_QUERY` is enabled.
+        """
+        self._low_level_search()
 
     def clear_file_data_from_memory(self) -> None:
         """

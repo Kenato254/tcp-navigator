@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from src.configuration import Configuration
+from src.constants import SearchAlgorithm
 from src.core.helpers.file_loader import FileLoader
 from src.core.server import TcpRequestHandler, ThreadedTcpServer
 
@@ -58,7 +59,7 @@ def test_concurrent_client_requests(
             client_socket.connect((threaded_tcp_server.server_address))
             client_socket.sendall(b"test")
             response = client_socket.recv(1024)
-            assert response == b"STRING EXISTS"
+            assert response == b"STRING EXISTS\n"
         finally:
             client_socket.close()
 
@@ -86,5 +87,5 @@ def test_sequential_client_requests(
         for query in [b"test1", b"test2", b"test3"]:
             client_socket.sendall(query)
             response = client_socket.recv(1024)
-            assert response == b"STRING EXISTS"
+            assert response == b"STRING EXISTS\n"
             file_loader.check_text.assert_any_call(query)

@@ -54,28 +54,22 @@ class Configuration:
         self._CONFIG_PATH = (
             Path(__file__).resolve().parent.parent / config_file
         )
+
         # Read configurations
         try:
             self._read_config()
-
-            self.__logger.debug("File masked location: ")
-            print(  # Todo: Clean up
-                (
-                    _ := (
-                        lambda path: '/'.join(
-                            [
-                                '*' * len(part)
-                                for part in path.rsplit('/', 1)[0].split(
-                                    '/'
-                                )
-                            ]
-                            + [path.rsplit('/', 1)[-1]]
-                        )
-                    )(self.FILE_PATH)
-                ),
-                end="\n",
+            (  # Todo: Clean up
+                masked_path := (
+                    lambda path: '/'.join(
+                        [
+                            '*' * len(part)
+                            for part in path.rsplit('/', 1)[0].split('/')
+                        ]
+                        + [path.rsplit('/', 1)[-1]]
+                    )
+                )(self.FILE_PATH)
             )
-
+            self.__logger.debug(f"File masked location: {masked_path}")
         except NoOptionError as err:
             self.__logger.error(
                 f"Reading `{config_file}` failed  with error: {err}"

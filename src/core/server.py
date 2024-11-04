@@ -37,6 +37,7 @@ class TcpRequestHandler(BaseRequestHandler):
 
             while True:
                 query = self.request.recv(1024).decode("utf-8").strip()
+
                 if not query:
                     break
 
@@ -44,9 +45,7 @@ class TcpRequestHandler(BaseRequestHandler):
                 start_perf_counter = time.perf_counter()
 
                 # Use FileLoader to check the file
-                if file_loader.check_text(
-                    query.encode(), SearchAlgorithm.BRUTE_FORCE
-                ):
+                if file_loader.check_text(query.encode()):
                     response = "STRING EXISTS\n"
                 else:
                     response = "STRING NOT FOUND\n"
@@ -247,6 +246,10 @@ class TcpServer:
 if __name__ == "__main__":
     config = Configuration()
     file_loader = FileLoader(config)
+    if (
+        not config.REREAD_ON_QUERY
+    ):  # Todo: Run on a seperate thread to avoid blocking
+        file_loader.load_buffer()
 
     server = TcpServer(config, file_loader)
     server.run()
